@@ -1,5 +1,5 @@
 # STTFormer
-This repo is the official implementation for [Spatio-Temporal Tuples Transformer for Skeleton-Based Action Recognition](https://arxiv.org/abs/2201.02849).
+This repository is the official implementation for [Spatio-Temporal Tuples Transformer for Skeleton-Based Action Recognition](https://arxiv.org/abs/2201.02849).
 
 ## Architecture of STTFormer
 ![image](src/Abstract.png)
@@ -90,7 +90,7 @@ python3 ensemble.py --dataset ntu/xsub --joint_dir work_dir/ntu60/xsub_joint --b
 
 ## Acknowledgements
 
-This repo is based on [CTR-GCN](https://github.com/Uason-Chen/CTR-GCN) and [DSTA-Net](https://github.com/lshiwjx/DSTA-Net). Thanks to the original authors for their work!
+This repository is based on [CTR-GCN](https://github.com/Uason-Chen/CTR-GCN). Thanks to the original authors for their work!
 
 # Citation
 

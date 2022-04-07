@@ -14,10 +14,10 @@ class Pos_Embed(nn.Module):
 
         position = torch.from_numpy(np.array(pos_list)).unsqueeze(1).float()
 
-        # Compute the positional encodings once in log space
         pe = torch.zeros(num_frames * num_joints, channels)
 
-        div_term = torch.exp(torch.arange(0, channels, 2).float() * -(math.log(10000.0) / channels))  # channel//2
+        div_term = torch.exp(torch.arange(0, channels, 2).float() * -(math.log(10000.0) / channels)) 
+        
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.view(num_frames, num_joints, channels).permute(2, 0, 1).unsqueeze(0)

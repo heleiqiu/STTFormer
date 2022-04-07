@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from pos_embed import Pos_Embed
+from .pos_embed import Pos_Embed
 
 class STA_Block(nn.Module):
     def __init__(self, in_channels, out_channels, qkv_dim,
@@ -45,10 +45,10 @@ class STA_Block(nn.Module):
         # Spatio-Temporal Tuples Attention
         xs = self.pes(x) + x if self.use_pes else x
         q, k = torch.chunk(self.to_qkvs(xs).view(N, 2 * self.num_heads, self.qkv_dim, T, V), 2, dim=1)
-        attention = self.atts + self.tan(torch.einsum('nsctu,nsctv->nsuv', [q, k]) / (self.qkv_dim * T)) * self.alphas
+        attention = self.atts + self.tan(torch.einsum('nhctu,nhctv->nhuv', [q, k]) / (self.qkv_dim * T)) * self.alphas
         attention = attention + self.attention0s.repeat(N, 1, 1, 1)
         attention = self.drop(attention)
-        xs = torch.einsum('nctu,nsuv->nsctv', [x, attention]).contiguous().view(N, self.num_heads * self.in_channels, T, V)
+        xs = torch.einsum('nctu,nhuv->nhctv', [x, attention]).contiguous().view(N, self.num_heads * self.in_channels, T, V)
         x_ress = self.ress(x)
         xs = self.relu(self.out_nets(xs) + x_ress)
         xs = self.relu(self.ff_net(xs) + x_ress)

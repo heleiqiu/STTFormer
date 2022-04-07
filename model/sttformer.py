@@ -1,6 +1,5 @@
 import torch.nn as nn
-from sta_block import STA_Block
-
+from .sta_block import STA_Block
 
 
 def conv_init(conv):
@@ -58,10 +57,7 @@ class Model(nn.Module):
                 fc_init(m)
 
     def forward(self, x):
-        """
-        x: N M C T V
-        :return: classes scores
-        """
+
         N, C, T, V, M = x.shape
 
         x = x.permute(0, 4, 1, 2, 3).contiguous().view(N * M, C, T, V)
@@ -73,10 +69,10 @@ class Model(nn.Module):
 
         # NM, C, T, V
         x = x.view(N, M, self.out_channels, -1)
-        x = x.permute(0, 1, 3, 2).contiguous().view(N, -1, self.out_channels, 1)  # whole channels of one spatial
+        x = x.permute(0, 1, 3, 2).contiguous().view(N, -1, self.out_channels, 1)
         x = self.drop_out2d(x)
         x = x.mean(3).mean(1)
 
-        x = self.drop_out(x)  # whole spatial of one channel
+        x = self.drop_out(x)
 
         return self.fc(x)
