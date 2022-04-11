@@ -1,10 +1,10 @@
-work_dir: ./work_dir/ntu120/xset_joint     # xsub_joint, xsub_bone, xsub_joint_motion
+work_dir: ./work_dir/ntu120/xsub_joint_motion
 run_mode: train
 
 # feeder
 feeder: feeders.feeder_ntu.Feeder
 train_feeder_args:
-  data_path: gendata/ntu120/NTU120_XSet.npz
+  data_path: gendata/ntu120/NTU120_XSub.npz
   split: train
   debug: False
   random_choose: False
@@ -14,16 +14,16 @@ train_feeder_args:
   normalization: False
   random_rot: True
   p_interval: [0.5, 1]
-  vel: False
+  vel: True
   bone: False
 
 test_feeder_args:
-  data_path: gendata/ntu120/NTU120_XSet.npz
+  data_path: gendata/ntu120/NTU120_XSub.npz
   split: test
   debug: False
   window_size: 64
   p_interval: [0.95]
-  vel: False
+  vel: True
   bone: False
 
 # model

@@ -58,16 +58,11 @@ Put downloaded data into the following directory structure:
 
 - Change the config file depending on what you want.
 
-```
-# Example: training STTFormer on NTU RGB+D 60 cross subject
-python3 main.py --config config/ntu60_xsub.yaml
-```
-
-- To train model on NTU RGB+D 60/120 with bone or motion modalities, setting `bone` or `vel` arguments in the config file or in the command line.
+- To train model on NTU RGB+D 60/120 with joint, bone or motion modalities, run the following command.
 
 ```
 # Example: training STTFormer on NTU RGB+D 60 cross subject under bone modality
-python3 main.py --config config/ntu60_xsub.yaml --train_feeder_args bone=True --test_feeder_args bone=True --work_dir ./work_dir/ntu60/xsub_bone
+python3 main.py --config config/ntu60_xsub_bone.yaml
 ```
 
 ### Testing
@@ -75,8 +70,10 @@ python3 main.py --config config/ntu60_xsub.yaml --train_feeder_args bone=True --
 - To test the trained models saved in <work_dir>, run the following command:
 
 ```
-python3 main.py --config <work_dir>/config.yaml --work_dir <work_dir> --run_mode test --save_score True --weights <work_dir>/xxx.pt
+# Example: testing STTFormer on NTU RGB+D 60 cross subject under bone modality
+python3 main.py --config config/ntu60_xsub_bone.yaml --run_mode test --save_score True --weights work_dir/ntu60/xsub_bone/xsub_bone.pt
 ```
+As with training, it should be noted that the data modality should correspond to the weight.
 
 - To ensemble the results of different modalities, run 
 ```

@@ -1,0 +1,59 @@
+work_dir: ./work_dir/ntu60/xsub_joint
+run_mode: train
+
+# feeder
+feeder: feeders.feeder_ntu.Feeder
+train_feeder_args:
+  data_path: gendata/ntu/NTU60_XSub.npz
+  split: train
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: 120
+  normalization: False
+  random_rot: True
+  p_interval: [0.5, 1]
+  vel: False
+  bone: False
+
+test_feeder_args:
+  data_path: gendata/ntu/NTU60_XSub.npz
+  split: test  
+  debug: False
+  window_size: 120
+  p_interval: [0.95]
+  vel: False
+  bone: False
+
+# model
+model: model.sttformer.Model
+model_args:
+  len_parts: 6
+  num_frames: 120
+  num_joints: 25
+  num_classes: 60
+  num_heads: 3
+  kernel_size: [3, 5]
+  num_persons: 2
+  num_channels: 3
+  use_pes: True
+  config: [[64,  64,  16], [64,  64,  16], 
+           [64,  128, 32], [128, 128, 32],
+           [128, 256, 64], [256, 256, 64], 
+           [256, 256, 64], [256, 256, 64]]
+
+#optim
+weight_decay: 0.0004
+base_lr: 0.1
+lr_decay_rate: 0.1
+step: [60, 80]
+warm_up_epoch: 5
+
+# training
+device: [0,1]
+cuda_visible_device: '2,3'
+batch_size: 64
+test_batch_size: 64
+num_epoch: 90
+nesterov: True
