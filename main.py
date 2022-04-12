@@ -50,15 +50,13 @@ def get_parser():
     # parameter priority: command line > config > default
     parser = argparse.ArgumentParser(description='Spatial Temporal Tuples Transformer')
     parser.add_argument('--work_dir', default='./work_dir/ntu60/temp', help='the work folder for storing results')
-    parser.add_argument('--config', default='./config/ntu60_xsub.yaml', help='path to the configuration file')
+    parser.add_argument('--config', default='./config/ntu60_xsub_joint.yaml', help='path to the configuration file')
 
     # processor
     parser.add_argument('--run_mode', default='train', help='must be train or test')
     parser.add_argument('--save_score', type=str2bool, default=False, help='if ture, the classification score will be stored')
 
     # visulize and debug
-    parser.add_argument('--log_interval', type=int, default=100, help='the interval for printing messages (#iteration)')
-    parser.add_argument('--save_interval', type=int, default=1, help='the interval for storing models (#iteration)')
     parser.add_argument('--save_epoch', type=int, default=80, help='the start epoch to save model (#iteration)')
     parser.add_argument('--eval_interval', type=int, default=5, help='the interval for evaluating models (#iteration)')
     parser.add_argument('--print_log', type=str2bool, default=True, help='print logging or not')
@@ -385,8 +383,7 @@ class Processor():
 
             for epoch in range(self.arg.start_epoch, self.arg.num_epoch):
 
-                save_model = (((epoch + 1) % self.arg.save_interval == 0) or (
-                        epoch + 1 == self.arg.num_epoch)) and (epoch+1) > self.arg.save_epoch
+                save_model = (epoch + 1 == self.arg.num_epoch)
                 self.train(epoch, save_model=save_model)
 
                 if ((epoch + 1) % self.arg.eval_interval == 0):

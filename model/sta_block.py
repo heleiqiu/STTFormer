@@ -16,12 +16,10 @@ class STA_Block(nn.Module):
         padt = int((kernel_size[0] - 1) / 2)
         
         # Spatio-Temporal Tuples Attention
-        atts = torch.zeros((1, num_heads, num_joints, num_joints))
-        self.register_buffer('atts', atts)
         if self.use_pes: self.pes = Pos_Embed(in_channels, num_frames, num_joints)
         self.to_qkvs = nn.Conv2d(in_channels, 2 * num_heads * qkv_dim, 1, bias=True)
         self.alphas = nn.Parameter(torch.ones(1, num_heads, 1, 1), requires_grad=True)
-        self.attention0s = nn.Parameter(torch.ones(1, num_heads, num_joints, num_joints) / num_joints, requires_grad=True)
+        self.att0s = nn.Parameter(torch.ones(1, num_heads, num_joints, num_joints) / num_joints, requires_grad=True)
         self.out_nets = nn.Sequential(nn.Conv2d(in_channels * num_heads, out_channels, (1, kernel_size[1]), padding=(0, pads)), nn.BatchNorm2d(out_channels))
         self.ff_net = nn.Sequential(nn.Conv2d(out_channels, out_channels, 1), nn.BatchNorm2d(out_channels))
 
@@ -45,8 +43,8 @@ class STA_Block(nn.Module):
         # Spatio-Temporal Tuples Attention
         xs = self.pes(x) + x if self.use_pes else x
         q, k = torch.chunk(self.to_qkvs(xs).view(N, 2 * self.num_heads, self.qkv_dim, T, V), 2, dim=1)
-        attention = self.atts + self.tan(torch.einsum('nhctu,nhctv->nhuv', [q, k]) / (self.qkv_dim * T)) * self.alphas
-        attention = attention + self.attention0s.repeat(N, 1, 1, 1)
+        attention = self.tan(torch.einsum('nhctu,nhctv->nhuv', [q, k]) / (self.qkv_dim * T)) * self.alphas
+        attention = attention + self.att0s.repeat(N, 1, 1, 1)
         attention = self.drop(attention)
         xs = torch.einsum('nctu,nhuv->nhctv', [x, attention]).contiguous().view(N, self.num_heads * self.in_channels, T, V)
         x_ress = self.ress(x)
